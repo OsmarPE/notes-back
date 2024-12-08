@@ -17,6 +17,29 @@ export const register = async(req, res) => {
 }
 
 
+export const getUser = async(req, res) => {
+    try {
+        const tokenSplit = req.headers.authorization;
+        const token = tokenSplit.split(' ')[1];
+        const userToken = jwt.verify(token, 'secret');
+
+        const user = await User.findById(userToken.id);
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found",
+            });
+        }
+
+        res.status(200).json({
+            message: user,
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: error.message,
+        });
+    }
+}
+
 export const login = async(req, res) => {
     try {
         const user = await User.findOne({ email: req.body.email });
@@ -33,12 +56,38 @@ export const login = async(req, res) => {
             });
         }
 
-        const token = jwt.sign({ userId: user._id, email: user.email , user: user.user }, 'secret', {
+        const token = jwt.sign({ userId: user._id, email: user.email , user: user.user, id: user._id }, 'secret', {
             expiresIn: '7d',
         });
 
         res.status(200).json({
             message: token,
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: error.message,
+        });
+    }
+}
+
+export const uploadImage = async(req, res) => {
+    try {
+
+        const tokenSplit = req.headers.authorization;
+        const token = tokenSplit.split(' ')[1];
+        const userToken = jwt.verify(token, 'secret');
+
+        const user = await User.findById(userToken.id);
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found",
+            });
+        }
+        user.image = req.file.filename;
+        await user.save();
+
+        res.status(200).json({
+            message: 'Imagen subida con éxito',
         });
     } catch (error) {
         res.status(500).json({

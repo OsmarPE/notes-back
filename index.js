@@ -13,7 +13,7 @@ app.use(cors());
 
 connect()
 
-
+app.use(express.static('public'))
 app.use('/',userRouter)
 app.use('/notes', notesRouter)
 

@@ -10,6 +10,10 @@ const UserSchema = new Schema({
   password: {
     type: String,
   },
+  image: {
+    type: String,
+    default: null,
+  },
   notes: [
     {
       type: Schema.Types.ObjectId,
