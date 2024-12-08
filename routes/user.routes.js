@@ -9,4 +9,7 @@ userRouter.post("/register", register )
 userRouter.post("/login", login)
 userRouter.put('/upload', upload.single('image'),uploadImage);
 userRouter.get('/user', getUser);
+userRouter.get('/test', (req, res) => {
+  res.send('test')
+})
   
